@@ -5,8 +5,8 @@ import org.litote.kmongo.Id
 
 data class Blog(
     @BsonId val id: Id<Blog>? = null,
-    var name: String,
-    var desc: String,
+    val name: String,
+    val desc: String,
 )
 
 fun Blog.toDto() = BlogDto(

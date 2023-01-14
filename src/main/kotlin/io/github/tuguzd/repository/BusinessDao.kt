@@ -14,6 +14,6 @@ class BusinessDao : KoinComponent {
 
     fun readName(name: String): List<Blog> =
         collection.find(
-            (Blog::name).regex(name, "i")
+            Blog::name.regex(name, "i")
         ).toList()
 }

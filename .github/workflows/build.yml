@@ -1,0 +1,62 @@
+name: Deploy blogs service to Docker Hub
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy_blogs:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: password
+        options: >-
+          --health-cmd "echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin -u mongo -p password --quiet | grep 1"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+        ports:
+          - 27017:27017
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+      - name: Test with Gradle
+        run: ./gradlew test
+      - name: Build .jar
+        run: ./gradlew buildFatJar
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: 0damir1tugushev/exam-blog:latest

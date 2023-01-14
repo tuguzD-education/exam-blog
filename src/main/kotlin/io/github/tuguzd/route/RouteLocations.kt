@@ -18,6 +18,6 @@ class Blogs {
     @Location("")
     data class Delete(val id: String, val blog: Blogs)
 
-    @Location("/search")
+    @Location("")
     data class SearchName(val name: String, val blog: Blogs)
 }
