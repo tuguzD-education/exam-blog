@@ -1,16 +1,14 @@
 package io.github.tuguzd.model
 
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.litote.kmongo.Id
+import org.litote.kmongo.newId
 
+@Serializable
 data class Blog(
-    @BsonId val id: Id<Blog>? = null,
+    @SerialName("_id") @Contextual val id: Id<Blog> = newId(),
     val name: String,
     val desc: String,
-)
-
-fun Blog.toDto() = BlogDto(
-    id = this.id.toString(),
-    name = this.name,
-    desc = this.desc,
 )

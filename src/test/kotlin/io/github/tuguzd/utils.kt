@@ -3,6 +3,7 @@ package io.github.tuguzd
 import io.github.tuguzd.model.BlogDto
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -18,10 +19,12 @@ inline fun testSetup(
     environment {
         config = MapApplicationConfig(
             "database.connectionUri" to
-                    "mongodb://mongo:password@localhost:27017/?authSource=admin"
+                    "mongodb://mongo:password@localhost:27017/?authSource=admin",
+            "service.tasksUrl" to "http://localhost:8081",
         )
     }
     val client = createClient {
+        install(Logging)
         install(ContentNegotiation) {
             json()
         }

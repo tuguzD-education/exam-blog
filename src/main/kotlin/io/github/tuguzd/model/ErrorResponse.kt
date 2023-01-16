@@ -8,5 +8,6 @@ data class ErrorResponse(val message: String) {
         val NOT_FOUND_RESPONSE = ErrorResponse("Blog was not found")
         val NOT_MODIFIED_RESPONSE = ErrorResponse("Blog was not modified")
         val BAD_REQUEST_RESPONSE = ErrorResponse("Invalid request")
+        val SERVICE_UNAVAILABLE = ErrorResponse("Service unavailable")
     }
 }

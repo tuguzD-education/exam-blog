@@ -3,8 +3,6 @@ name: Deploy blogs service to Docker Hub
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -24,6 +22,17 @@ jobs:
           --health-retries 5
         ports:
           - 27017:27017
+      tasks:
+        image: tuguzt/service-exam-task
+        ports:
+          - 8081:8080
+        env:
+          DATABASE_URL: mongodb://mongo:password@localhost:27017/?authSource=admin
+        healthcheck:
+          test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+          interval: 10s
+          timeout: 10s
+          retries: 5
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -43,6 +52,8 @@ jobs:
         run: ./gradlew clean build -x test
       - name: Test with Gradle
         run: ./gradlew test
+        env:
+          TASKS_URL: http://localhost:8081
       - name: Build .jar
         run: ./gradlew buildFatJar
       - name: Set up QEMU
