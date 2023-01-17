@@ -24,15 +24,10 @@ jobs:
           - 27017:27017
       tasks:
         image: tuguzt/service-exam-task
-        ports:
-          - 8081:8080
         env:
           DATABASE_URL: mongodb://mongo:password@localhost:27017/?authSource=admin
-        healthcheck:
-          test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
-          interval: 10s
-          timeout: 10s
-          retries: 5
+        ports:
+          - 8081:8080
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
