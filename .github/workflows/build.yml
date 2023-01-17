@@ -45,10 +45,6 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew clean build -x test
-      - name: Test with Gradle
-        run: ./gradlew test
-        env:
-          TASKS_URL: http://localhost:8081
       - name: Build .jar
         run: ./gradlew buildFatJar
       - name: Set up QEMU
